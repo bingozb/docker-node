@@ -1,13 +1,18 @@
-FROM debian:wheezy
-MAINTAINER bingo <bingo@dankal.cn>
+FROM alpine
+MAINTAINER bingo <bingov5@icloud.com>
 
-RUN apt-get update -y && apt-get install --no-install-recommends -y -q curl
-RUN mkdir /nodejs && curl http://nodejs.org/dist/v8.9.4/node-v8.9.4-linux-x64.tar.gz | tar xvzf - -C /nodejs --strip-components=1
+ARG NODE_VERSION=v8.9.4
+ARG WORK=/nodejs
+
+RUN apk --no-cache add wget
+RUN mkdir -p $WORK && \
+    wget -qO- --no-check-certificate http://nodejs.org/dist/$NODE_VERSION/node-$NODE_VERSION-linux-x64.tar.gz | tar -xzf - -C $WORK --strip-components=1
 
 ENV PATH $PATH:/nodejs/bin
+ENV SERVER_PORT 3000
 
 WORKDIR /app
 
-EXPOSE 3000
+EXPOSE $SERVER_PORT
 
-ENTRYPOINT ["/nodejs/bin/npm", "start"]
+ENTRYPOINT npm start
