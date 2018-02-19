@@ -1,18 +1,35 @@
-FROM alpine
+FROM alpine:3.7
 MAINTAINER bingo <bingov5@icloud.com>
 
-ARG NODE_VERSION=v8.9.4
-ARG WORK=/nodejs
-
-RUN apk --no-cache add wget
-RUN mkdir -p $WORK && \
-    wget -qO- --no-check-certificate http://nodejs.org/dist/$NODE_VERSION/node-$NODE_VERSION-linux-x64.tar.gz | tar -xzf - -C $WORK --strip-components=1
-
-ENV PATH $PATH:/nodejs/bin
+ENV NODE_VERSION 8.9.4
 ENV SERVER_PORT 3000
+
+RUN apk add --no-cache \
+        libstdc++ \
+    && apk add --no-cache --virtual .build-deps \
+        binutils-gold \
+        curl \
+        g++ \
+        gcc \
+        gnupg \
+        libgcc \
+        linux-headers \
+        make \
+        python \
+    && curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION.tar.xz" \
+    && tar -xf "node-v$NODE_VERSION.tar.xz" \
+    && cd "node-v$NODE_VERSION" \
+    && ./configure \
+    && make -j$(getconf _NPROCESSORS_ONLN) \
+    && make install \
+    && npm install cnpm -g --registry=https://registry.npm.taobao.org \
+    && apk del .build-deps \
+    && cd .. \
+    && rm -Rf "node-v$NODE_VERSION" \
+    && rm "node-v$NODE_VERSION.tar.xz"
 
 WORKDIR /app
 
 EXPOSE $SERVER_PORT
 
-ENTRYPOINT npm start
+CMD npm start
