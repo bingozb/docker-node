@@ -44,4 +44,5 @@ WORKDIR /app
 
 EXPOSE $SERVER_PORT
 
-ENTRYPOINT /docker-entrypoint.sh
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["deploy"]
