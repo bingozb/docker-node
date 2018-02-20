@@ -38,6 +38,7 @@ RUN apk add --no-cache --virtual .build-deps-yarn \
     && apk del .build-deps-yarn
 
 ADD https://raw.githubusercontent.com/bingozb/docker-nodejs/master/docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 
 WORKDIR /app
 
