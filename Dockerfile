@@ -40,7 +40,7 @@ RUN apk add --no-cache --virtual .build-deps-yarn \
     && apk del .build-deps-yarn
 
 # install some packages.
-RUN yarn install --save-dev cross-env
+RUN yarn add cross-env --dev
 
 WORKDIR /app
 
