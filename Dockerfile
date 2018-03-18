@@ -5,6 +5,7 @@ ENV NODE_VERSION 8.9.4
 ENV YARN_VERSION 1.3.2
 ENV SERVER_PORT 3000
 
+# install node (without npm).
 RUN apk add --no-cache \
         libstdc++ \
     && apk add --no-cache --virtual .build-deps \
@@ -27,6 +28,7 @@ RUN apk add --no-cache \
     && rm -Rf "node-v$NODE_VERSION" \
     && rm "node-v$NODE_VERSION.tar.xz"
 
+# install yarn.
 RUN apk add --no-cache --virtual .build-deps-yarn \
         curl \
     && curl -fSLO --compressed "https://yarnpkg.com/downloads/$YARN_VERSION/yarn-v$YARN_VERSION.tar.gz" \
@@ -37,12 +39,12 @@ RUN apk add --no-cache --virtual .build-deps-yarn \
     && rm yarn-v$YARN_VERSION.tar.gz \
     && apk del .build-deps-yarn
 
-ADD https://raw.githubusercontent.com/bingozb/docker-nodejs/master/docker-entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x /docker-entrypoint.sh
+# install some packages.
+RUN yarn install --save-dev cross-env
 
 WORKDIR /app
 
 EXPOSE $SERVER_PORT
 
-ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD ["deploy"]
+ENTRYPOINT ["yarn"]
+CMD ["start"]

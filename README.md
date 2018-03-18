@@ -43,10 +43,11 @@ I recommend separating build and deployment. It is recommended to use two hosts,
 
 ### Host A
 
-First, put your node.js project in your host machine via `git` or `scp` and so on, and run the container with the command `build`.
+First, put your node.js project in your host machine via `git` or `scp` and so on, and run the container with the command `install` and `run build`.
 
 ```sh
-$ sudo docker run --rm -v /path/to/yourproject:/app bingozb/nodejs build
+$ sudo docker run --rm -v /path/to/yourproject:/app bingozb/nodejs install
+$ sudo docker run --rm -v /path/to/yourproject:/app bingozb/nodejs run build
 ```
 
 Once the execution is complete, you will find a new folder `node_modules` and a new file `yarn.lock` in your project.
@@ -65,7 +66,7 @@ $ scp app.tar.gz user@HostB:/path/to/yourproject
 
 Decompress first, if necessary.
 
-```
+```sh
 $ tar -xzf /path/to/yourproject/app.tar.gz -C /path/to/yourproject/ 
 $ rm -f /path/to/yourproject/app.tar.gz
 ```
@@ -85,17 +86,11 @@ After that, you can access your project with Host B and 3000 port.
 
 If you think it's not necessary to use two hosts, you can certainly do it on the same host.
 
-All you have to do is run the container with the command `build deploy`.
-
+```sh
+$ sudo docker run --rm -v /path/to/yourproject:/app bingozb/nodejs install
+$ sudo docker run --rm -v /path/to/yourproject:/app bingozb/nodejs run build
+$ sudo docker run --restart always -d --name yourapp -p 3000:3000 -v /path/to/yourproject:/app bingozb/nodejs
 ```
-$ sudo docker run --restart always -d --name yourapp \
--p 3000:3000 \
--v /path/to/yourproject:/app \
-bingozb/nodejs \
-build deploy
-```
-
-Cool, Anha？emmm ...
 
 **Why do we need to separate build and deployment?**
 
