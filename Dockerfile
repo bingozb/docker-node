@@ -3,7 +3,6 @@ MAINTAINER bingo <bingov5@icloud.com>
 
 ENV NODE_VERSION 8.9.4
 ENV YARN_VERSION 1.3.2
-ENV SERVER_PORT 3000
 
 # install node (without npm).
 RUN apk add --no-cache \
@@ -39,12 +38,9 @@ RUN apk add --no-cache --virtual .build-deps-yarn \
     && rm yarn-v$YARN_VERSION.tar.gz \
     && apk del .build-deps-yarn
 
-# install some packages.
-RUN yarn add cross-env --dev
-
 WORKDIR /app
 
-EXPOSE $SERVER_PORT
+EXPOSE 80
 
 ENTRYPOINT ["yarn"]
 CMD ["start"]
